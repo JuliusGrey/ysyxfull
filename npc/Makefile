@@ -29,6 +29,9 @@ clean:
 .PHONY: test verilog help compile bsp reformat checkformat clean
 
 sim:
+	verilator -Wall --cc --exe --build csrc/sim_main.cpp vsrc/top.v --trace
+	obj_dir/Vtop
+	gtkwave wave.vcd
 	$(call git_commit, "sim RTL") # DO NOT REMOVE THIS LINE!!!
 	@echo "Write this Makefile by yourself."
 

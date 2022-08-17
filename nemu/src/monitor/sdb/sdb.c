@@ -19,10 +19,15 @@
 #include <readline/history.h>
 #include "sdb.h"
 
+
 static int is_batch_mode = false;
 
 void init_regex();
 void init_wp_pool();
+
+void creatwp(char* exprstr);
+void deletewp(int wp);
+void printwp();
 
 /* We use the `readline' library to provide more flexibility to read from stdin. */
 static char* rl_gets() {
@@ -47,9 +52,66 @@ static int cmd_c(char *args) {
   return 0;
 }
 
+static int cmd_si(char *args) {
+  int loop_num =  atoi(args);
+  cpu_exec(loop_num);
+  return 0;
+}
+
+// static int cmd_c(char *args) {
+//   cpu_exec(-1);
+//   return 0;
+// }
 
 static int cmd_q(char *args) {
   return -1;
+}
+
+static int cmd_info(char *args) {
+  if(strcmp(args,"r" ) == 0){
+    isa_reg_display();
+    return 0;
+  }else if(strcmp(args,"w" ) == 0){
+    printwp();
+    return 0;
+  }else{
+    return 0;
+  }
+}
+
+
+
+
+static int cmd_x(char *args) {
+
+
+  int base_addr =  atoi(args) + RESET_VECTOR;
+  int length = atoi(args + 2);
+  for(int i = 0 ; i < length ; i++ ){
+    word_t data = paddr_read(base_addr , 4);
+    printf("%#x\t%#lx\n",base_addr , data);
+    base_addr = base_addr+ 4;
+  }
+  return 0;
+}
+
+static int cmd_w(char *args) {
+   creatwp(args);
+   return 0;
+}
+
+static int cmd_d(char *args) {
+   deletewp(atoi(args));
+   return 0;
+}
+
+static int cmd_p(char *args) {
+
+
+  bool success ;
+  uint64_t res =expr(args, &success);
+  printf("%s = %lu\n", args, res);
+  return 0;
 }
 
 static int cmd_help(char *args);
@@ -62,6 +124,12 @@ static struct {
   { "help", "Display informations about all supported commands", cmd_help },
   { "c", "Continue the execution of the program", cmd_c },
   { "q", "Exit NEMU", cmd_q },
+  { "si", "Execution of the program", cmd_si },
+  { "info", "Display thje info", cmd_info },
+  { "x", "Scan the Store", cmd_x },
+  { "p", "Caculate the exper", cmd_p },
+  { "w", "Set the watch point ", cmd_w },
+  { "d", "delete the watch point ", cmd_d },
 
   /* TODO: Add more commands */
 

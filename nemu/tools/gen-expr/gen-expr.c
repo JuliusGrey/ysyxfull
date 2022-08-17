@@ -31,9 +31,54 @@ static char *code_format =
 "  return 0; "
 "}";
 
+
+
+static void gen_rand_expr_p() {
+  switch (0)
+  {
+  case 0: {
+    int last = strlen(buf);
+    buf[last] = rand() %100;
+    buf[last + 1] = '\0';
+    break;
+  }
+  case 1 :{ 
+    int last = strlen(buf);
+    buf[last] = '(';
+    buf[last + 1] = '\0';
+    gen_rand_expr_p();
+    int last2 = strlen(buf);
+    buf[last2] = '(';
+    buf[last2 + 1] = '\0';
+    break;
+  }
+  
+  default:{
+    gen_rand_expr_p();
+
+    int last = strlen(buf);
+    char op ;
+    switch(rand() %4){
+      case 0: op = '+';
+      case 1: op = '-';
+      case 2: op = 'x';
+      case 3: op = '/';
+    }
+    buf[last] = op;
+    buf[last + 1] = '\0';
+
+    gen_rand_expr_p();
+    break;}
+  }
+  // buf[0] = '\0';
+}
+
 static void gen_rand_expr() {
   buf[0] = '\0';
+  
+  gen_rand_expr_p();
 }
+
 
 int main(int argc, char *argv[]) {
   int seed = time(0);
