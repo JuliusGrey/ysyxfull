@@ -88,9 +88,9 @@ static int cmd_x(char *args) {
   int base_addr =  atoi(args) + RESET_VECTOR;
   int length = atoi(args + 2);
   for(int i = 0 ; i < length ; i++ ){
-    word_t data = paddr_read(base_addr , 4);
+    word_t data = paddr_read(base_addr , 8);
     printf("%#x\t%#lx\n",base_addr , data);
-    base_addr = base_addr+ 4;
+    base_addr = base_addr+ 8;
   }
   return 0;
 }
@@ -200,6 +200,7 @@ void sdb_mainloop() {
 
     if (i == NR_CMD) { printf("Unknown command '%s'\n", cmd); }
   }
+  printf("come to here\n");
 }
 
 void init_sdb() {

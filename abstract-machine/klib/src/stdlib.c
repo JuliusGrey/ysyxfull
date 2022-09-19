@@ -29,7 +29,14 @@ int atoi(const char* nptr) {
   return x;
 }
 
+
+static uint64_t offest = 0;
 void *malloc(size_t size) {
+  offest = offest + size;
+  return (heap.start + offest -size);
+  // void* ptr = ptr_start;
+  // ptr_start = ptr_start + size;
+  // return ptr;
   // On native, malloc() will be called during initializaion of C runtime.
   // Therefore do not call panic() here, else it will yield a dead recursion:
   //   panic() -> putchar() -> (glibc) -> malloc() -> panic()

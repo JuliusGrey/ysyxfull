@@ -45,9 +45,9 @@ static struct rule {
   {"&&", TK_AND},        // and
   {"\\(", TK_BRF},        // bracket-first
   {"\\)", TK_BRL},        // bracket-last
-  {"[1-9][0-9]*|0$" ,TK_DNUM},
-  {"\\$[\\$a-z][a-z0-9]+|$" ,TK_REG},
-  {"0x[a-fA-F0-9]+|$" ,TK_HNUM},
+  {"[1-9][0-9]*|0" ,TK_DNUM},
+  {"\\$[\\$a-z][a-z0-9]+" ,TK_REG},
+  {"0x[a-fA-F0-9]+" ,TK_HNUM},
 };
 
 #define NR_REGEX ARRLEN(rules)
@@ -227,14 +227,14 @@ int find_main_op(int sp, int ep){
 
   return 0;
 }
-uint32_t eval (int p , int q){
+uint64_t eval (int p , int q){
   if(p >q){
   }else if(p == q){
     if(tokens[ p].type== TK_DNUM){
       return strtoul(tokens[ p].str,NULL,10);
     }else if(tokens[ p].type== TK_REG){
       bool success;
-      uint32_t regval = isa_reg_str2val(tokens[ p].str, &success);
+      uint64_t regval = isa_reg_str2val(tokens[ p].str, &success);
       if(success){
         return regval;
       }else {
@@ -290,7 +290,7 @@ uint32_t eval (int p , int q){
 
 }
 
-uint32_t expr(char *e, bool *success) {
+uint64_t expr(char *e, bool *success) {
   if (!make_token(e)) {
     *success = false;
     return 0;

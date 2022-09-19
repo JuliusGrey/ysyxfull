@@ -34,6 +34,7 @@ static bool g_print_step = false;
 void device_update();
 bool probe();
 
+
 static void trace_and_difftest(Decode *_this, vaddr_t dnpc) {
 #ifdef CONFIG_ITRACE_COND
   if (ITRACE_COND) { log_write("%s\n", _this->logbuf); }
@@ -77,6 +78,7 @@ static void execute(uint64_t n) {
   Decode s;
   for (;n > 0; n --) {
     exec_once(&s, cpu.pc);
+    // printf("cpu.pc is %#lx\n",cpu.pc);
     g_nr_guest_inst ++;
     trace_and_difftest(&s, cpu.pc);
     if (nemu_state.state != NEMU_RUNNING) break;
@@ -127,4 +129,8 @@ void cpu_exec(uint64_t n) {
       // fall through
     case NEMU_QUIT: statistic();
   }
+  if(nemu_state.halt_ret != 0 || nemu_state.state == NEMU_ABORT ){
+    dispaly_irf();
+  }
+  
 }

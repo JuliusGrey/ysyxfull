@@ -24,7 +24,7 @@ const char *regs[] = {
 };
 
 void isa_reg_display() {
-  printf("come to 64 \n");
+  // printf("come to 64 \n");
   int reg_num = 32;
   int i;
   for(i = 0; i < reg_num ; i++){
